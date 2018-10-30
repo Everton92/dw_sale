@@ -1,0 +1,15 @@
+<odoo>
+    <!--- Auto update fato -->
+    <record id="ir_cron_update_dw_sale_fact_order" model="ir.cron">
+        <field name="name">Update DW Scheduler</field>
+        <field name="model_id" ref="model_dw_sale_fact_sale_order"/>
+        <!--<field name="type">ir.actions.server</field>-->
+        <field name="state">code</field>
+        <field name="code">model.schedule_fact_load()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall">True</field>
+        <field name="nextcall" eval="(DateTime.utcnow() + timedelta(1)).strftime('%Y-%m-%d 03:00:00')"/>
+    </record>
+</odoo>

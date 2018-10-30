@@ -1,0 +1,112 @@
+<odoo>
+    <data noupdate="1">
+        <record id="dw_sale.fact_sale_order_tree" model="ir.ui.view">
+            <field name="name">dw_sale.fact_sale_order.tree</field>
+            <field name="model">dw_sale.fact_sale_order</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="price_unit"/>
+                    <field name="price_tax"/>
+                    <field name="price_total"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Dim Time -->
+        <record id="dw_sale.dim_time_tree" model="ir.ui.view">
+            <field name="name">dw_sale.dim_time.tree</field>
+            <field name="model">dw_sale.dim_time</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="sale"/>
+                    <field name="data_criacao"/>
+                    <field name="data_atualizacao"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="dw_sale.dim_time_form" model="ir.ui.view">
+            <field name="name">dw_sale.dim_time.form</field>
+            <field name="model">dw_sale.dim_time</field>
+            <field name="arch" type="xml">
+                <form string="Dim Time">
+                    <sheet>
+                        <group>
+                            <field name="nk_sale"/>
+                            <field name="sale" attrs="{'invisible': [('nk_sale', '=', False)]}"/>
+                        </group>
+                        <group col="4">
+                            <field name="data_criacao"/>
+                            <field name="data_atualizacao"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="dw_sale.dim_time_graph" model="ir.ui.view">
+            <field name="name">dw_sale.dim_time.tree</field>
+            <field name="model">dw_sale.dim_time</field>
+            <field name="arch" type="xml">
+                <graph>
+                    <field name="sale"/>
+                    <field name="data_atualizacao"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="dw_sale.fact_sale_order_action_window" model="ir.actions.act_window">
+            <field name="name">Vendas</field>
+            <field name="res_model">dw_sale.fact_sale_order</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <record id="dw_sale.dim_time_action_window" model="ir.actions.act_window">
+            <field name="name">Registros</field>
+            <field name="res_model">dw_sale.dim_time</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="dw_sale.dim_time_relatorio_action_window" model="ir.actions.act_window">
+            <field name="name">Relatórios</field>
+            <field name="res_model">dw_sale.dim_time</field>
+            <field name="view_mode">graph</field>
+        </record>
+
+        <!-- server action to the one above -->
+        <!--
+        <record model="ir.actions.server" id="/home/everton/odoo/addons/dw_sale.action_server">
+          <field name="name">/home/everton/odoo/addons/dw_sale server</field>
+          <field name="model_id" ref="model_/home/everton/odoo/addons/module_bi_/home/everton/odoo/addons/dw_sale"/>
+          <field name="state">code</field>
+          <field name="code">
+            action = {
+              "type": "ir.actions.act_window",
+              "view_mode": "tree,form",
+              "res_model": self._name,
+            }
+          </field>
+        </record>
+        -->
+
+        <!-- top menu item -->
+        <!--
+        <menuitem name="/home/everton/odoo/addons/dw_sale" id="/home/everton/odoo/addons/dw_sale.menu_root"/>
+        -->
+        <!-- menu categories -->
+        <!--
+        <menuitem name="menu 1" id="/home/everton/odoo/addons/dw_sale.menu_1" parent="/home/everton/odoo/addons/dw_sale.menu_root"/>
+        <menuitem name="menu 2" id="/home/everton/odoo/addons/dw_sale.menu_2" parent="/home/everton/odoo/addons/dw_sale.menu_root"/>
+        -->
+        <!-- actions -->
+        <menuitem id="dw_sale.root_menu" name="DW Sale"/>
+
+        <menuitem id="dw_sale.dim_time" name="Dim Time" parent="dw_sale.root_menu"/>
+        <menuitem id="dw_sale.fact_sale_order" name="Fact Sale Orders" parent="dw_sale.root_menu"/>
+        <menuitem id="dw_sale.reports" name="Relatórios" parent="dw_sale.root_menu"/>
+
+        <menuitem id="dw_sale.dim_fact_sale_order_registros" parent="dw_sale.fact_sale_order" action="dw_sale.fact_sale_order_action_window"/>
+        <menuitem id="dw_sale.dim_time_registros" parent="dw_sale.dim_time" action="dw_sale.dim_time_action_window"/>
+        <menuitem id="dw_sale.dim_time_relatorio" parent="dw_sale.dim_time" action="dw_sale.dim_time_relatorio_action_window"/>
+    </data>
+</odoo>

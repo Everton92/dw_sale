@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="dw_sale_report_pivot" model="ir.ui.view">
+         <field name="name">dw_sale.report.pivot</field>
+         <field name="model">dw_sale.report</field>
+         <field name="arch" type="xml">
+             <pivot string="Análise de Vendas" disable_linking="True">
+                 <field name="time_venda_id" type="col"/>
+                 <field name="data_confirmacao" interval="month" type="row"/>
+                 <field name="total_n_tributado" type="measure"/>
+             </pivot>
+         </field>
+    </record>
+
+    <record id="dw_order_product_graph" model="ir.ui.view">
+         <field name="name">dw_sale.report.graph</field>
+         <field name="model">dw_sale.report</field>
+         <field name="arch" type="xml">
+             <graph string="Análise de vendas">
+                 <field name="data_compra" type="row"/>
+                 <field name="total_n_tributado" type="measure"/>
+             </graph>
+         </field>
+    </record>
+
+    <!-- Custom reports (aka filters) -->
+    <record id="dw_filter_sale_report_sales_funnel" model="ir.filters">
+        <field name="name">Canal de vendas</field>
+        <field name="model_id">dw_sale.report</field>
+        <field name="domain">['&amp;', ('data_compra','&lt;=', time.strftime('%%Y-12-31')), '&amp;', ('data_compra','&gt;=',time.strftime('%%Y-01-01')), ('state','not in',('cancel',))]</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['state'], 'measures': ['total_n_tributado']}</field>
+    </record>
+
+    <record id="dw_filter_sale_report_salespersons" model="ir.filters">
+        <field name="name">Por vendedor</field>
+        <field name="model_id">dw_sale.report</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['data_compra:month', 'vendedor_id']}</field>
+    </record>
+
+    <record id="dw_filter_sale_report_salesteam" model="ir.filters">
+        <field name="name">Por equipe de vendas</field>
+        <field name="model_id">dw_sale.report</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['data_compra:month', 'time_venda_id']}</field>
+    </record>
+
+    <record id="dw_filter_isale_report_product" model="ir.filters">
+        <field name="name">Por produto</field>
+        <field name="model_id">dw_sale.report</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['data_compra:month', 'produto_id']}</field>
+    </record>
+
+    <record id="dw_view_order_product_search" model="ir.ui.view">
+        <field name="name">dw_sale.report.search</field>
+        <field name="model">dw_sale.report</field>
+        <field name="arch" type="xml">
+            <search string="Análise de vendas">
+                <field name="data_compra"/>
+                <filter string="Esse ano" name="year" invisible="1" domain="[('data_compra','&lt;=', time.strftime('%%Y-12-31')),('data_compra','&gt;=',time.strftime('%%Y-01-01'))]"/>
+                <filter name="cotacao" string="Contação" domain="[('state','in', ('draft', 'sent'))]"/>
+                <filter name="vendas" string="Vendas" domain="[('state','not in',('draft', 'cancel', 'sent'))]"/>
+                <separator/>
+                <field name="cliente_id"/>
+                <field name="produto_id"/>
+                <field name="vendedor_id"/>
+                <group expand="0" string="Filtros extendidos">
+                    <field name="categoria_id" filter_domain="[('categoria_id', 'child_of', self)]"/>
+                    <field name="empresa_id" groups="base.group_multi_company"/>
+                </group>
+                <group expand="1" string="Group By">
+                    <filter string="Vendedor" name="User" context="{'group_by':'vendedor_id'}"/>
+                    <filter string="Canal de vendas" context="{'group_by':'time_venda_id'}"/>
+                    <filter string="Cliente" name="Customer" context="{'group_by':'cliente_id'}"/>
+                    <filter string="Categoria de produto" name="Category" context="{'group_by':'categoria_id'}"/>
+                    <filter name="status" string="Status" context="{'group_by':'state'}"/>
+                    <filter string="Empresa" groups="base.group_multi_company" context="{'group_by':'empresa_id'}"/>
+                    <separator/>
+                    <filter string="Mês do pedido" context="{'group_by':'data_compra:month'}" help="Data do Pedido de Venda"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="dw_action_order_report_all" model="ir.actions.act_window">
+        <field name="name">Análise de vendas</field>
+        <field name="res_model">dw_sale.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="view_id"></field>  <!-- force empty -->
+        <field name="search_view_id" ref="dw_view_order_product_search"/>
+        <field name="context">{'search_default_vendas': 1, 'group_by_no_leaf': 1, 'group_by': []}</field>
+    </record>
+
+    <menuitem id="dw_sale.reports_all_menu" parent="dw_sale.reports" action="dw_sale.dw_action_order_report_all"/>
+</odoo>

@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_/home/everton/odoo/addons/module_bi_/home/everton/odoo/addons/module_bi,/home/everton/odoo/addons/module_bi./home/everton/odoo/addons/module_bi,model_/home/everton/odoo/addons/module_bi_/home/everton/odoo/addons/module_bi,,1,0,0,0
